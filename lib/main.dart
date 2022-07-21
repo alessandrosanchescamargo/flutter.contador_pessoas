@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,24 +13,36 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Homepage(),
+      home: HomePage(),
     );
   }
 }
 
-class Homepage extends StatelessWidget {
-  const Homepage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int count = 0;
   void decrement() {
-    // ignore: avoid_print
-    print('decrement');
+    setState(() {
+      count--;
+    });
+    print(count);
   }
 
   void increment() {
-    // ignore: avoid_print
-    print('increment');
+    setState(() {
+      count++;
+    });
+    print(count);
   }
 
+  bool get isEmpty => count == 0;
+  bool get isFull => count == 20;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,21 +58,21 @@ class Homepage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Pode Entrar',
+              Text(
+                isFull ? 'Lotado' : 'Pode Entrar',
                 style: TextStyle(
-                  fontSize: 26,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
+                  fontSize: isFull ? 36 : 26,
+                  color: isFull ? Colors.red : Colors.white,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(40),
+              Padding(
+                padding: const EdgeInsets.all(40),
                 child: Text(
-                  '0',
+                  '$count',
                   style: TextStyle(
                     fontSize: 100,
-                    color: Colors.white,
+                    color: isFull ? Colors.red : Colors.white,
                   ),
                 ),
               ),
@@ -66,9 +80,11 @@ class Homepage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: decrement,
+                    onPressed: isEmpty ? null : decrement,
                     style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: isEmpty
+                            ? Colors.white.withOpacity(0.2)
+                            : Colors.white,
                         fixedSize: const Size(100, 100),
                         primary: Colors.black,
                         shape: RoundedRectangleBorder(
@@ -83,9 +99,10 @@ class Homepage extends StatelessWidget {
                   ),
                   const SizedBox(width: 32),
                   TextButton(
-                    onPressed: increment,
+                    onPressed: isFull ? null : increment,
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor:
+                          isFull ? Colors.white.withOpacity(0.2) : Colors.white,
                       fixedSize: const Size(100, 100),
                       primary: Colors.black,
                       shape: RoundedRectangleBorder(
